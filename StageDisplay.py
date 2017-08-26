@@ -19,6 +19,11 @@ class Application(tk.Frame):
     
     # Store the threaded class for ProPresenter
     ProPresenter = None
+
+    # Config data for ProPresenter
+    ProP_IPAddress = None
+    ProP_IPPort = None
+    ProP_Password = None
     
     # Store the labels on the screen
     labelCurrent = None
@@ -30,7 +35,11 @@ class Application(tk.Frame):
 
     # The maximum length of each line on the screen - set in config file
     wordWrapLength = 1500
-    
+
+    # Do we need to attempt a reconnection?
+    tryReconnect = False
+    disconnectTime = 0
+
     def __init__(self, master = None):
         # Setup the application and display window
         
@@ -57,10 +66,11 @@ class Application(tk.Frame):
             exit()
         
         try:
-            ProP_IPAddress = ConfigData['IPAddress']
-            ProP_IPPort = int(ConfigData['IPPort'])
-            ProP_Password = ConfigData['Password']
+            self.ProP_IPAddress = ConfigData['IPAddress']
+            self.ProP_IPPort = int(ConfigData['IPPort'])
+            self.ProP_Password = ConfigData['Password']
             self.wordWrapLength = int(ConfigData['WordWrapLength'])
+
         except Exception, e:
             print
             print "##############################################"
@@ -71,13 +81,48 @@ class Application(tk.Frame):
             
             exit()
         
+        self.setupMainInterface()
+        self.connect()
+        self.reconnect_tick()
+
+    def connect(self):
         # Connect to ProPresenter and setup the necessary callbacks
-        self.ProPresenter = ProPresenterStageDisplayClientComms(ProP_IPAddress, ProP_IPPort, ProP_Password)
+        self.tryReconnect = False
+        self.disconnectTime = 0
+
+        self.ProPresenter = ProPresenterStageDisplayClientComms(self.ProP_IPAddress, self.ProP_IPPort, self.ProP_Password)
         self.ProPresenter.addSubscription("CurrentSlide", self.updateSlideTextCurrent)
         self.ProPresenter.addSubscription("NextSlide", self.updateSlideTextNext)
+        self.ProPresenter.addSubscription("Connected", self.connected)
+        self.ProPresenter.addSubscription("ConnectionFailed", self.connectFailed)
+        self.ProPresenter.addSubscription("Disconnected", self.disconnected)
         self.ProPresenter.start()
+
+    def connected(self, data):
+        print "ProPresenter Connected"
+
+    def connectFailed(self, error):
+        self.tryReconnect = True
         
-        self.setupMainInterface()
+        if self.disconnectTime == 0:
+            self.disconnectTime = time.time()
+        
+        print "ProPresenter Connect Failed", error
+    
+    def disconnected(self, error):
+        self.tryReconnect = True
+        
+        if self.disconnectTime == 0:
+            self.disconnectTime = time.time()
+        
+        print "ProPresenter Disconnected", error
+
+    def reconnect_tick(self):
+        if self.tryReconnect and self.disconnectTime < time.time() - 5:
+            print "Attempting to reconnect to ProPresenter"
+            self.connect()
+        
+        self.labelCurrent.after(2000, self.reconnect_tick)
 
     def setupMainInterface(self):
         # Setup the interface widgets
