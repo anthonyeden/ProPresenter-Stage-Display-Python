@@ -1,5 +1,6 @@
 {
     "IPAddress": "127.0.0.1",
     "IPPort": 60119,
-    "Password": "password"
+    "Password": "password",
+    "WordWrapLength": 1500
 }

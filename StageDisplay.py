@@ -27,6 +27,9 @@ class Application(tk.Frame):
     
     # Store the last time string
     time_last = ""
+
+    # The maximum length of each line on the screen - set in config file
+    wordWrapLength = 1500
     
     def __init__(self, master = None):
         # Setup the application and display window
@@ -57,6 +60,7 @@ class Application(tk.Frame):
             ProP_IPAddress = ConfigData['IPAddress']
             ProP_IPPort = int(ConfigData['IPPort'])
             ProP_Password = ConfigData['Password']
+            self.wordWrapLength = int(ConfigData['WordWrapLength'])
         except Exception, e:
             print
             print "##############################################"
@@ -100,8 +104,6 @@ class Application(tk.Frame):
         self.grid_propagate(False)
         self.top.grid_propagate(False)
         
-        wraplen = self.root.winfo_width() / 1.3
-        
         # Clock Text Label
         self.labelClock = tk.Label(
             self,
@@ -109,7 +111,7 @@ class Application(tk.Frame):
             font = ("Arial", 52, "bold"),
             background = "black",
             foreground = "#FFF",
-            wraplength = wraplen,
+            wraplength = self.wordWrapLength,
             anchor = tk.NW,
             justify = tk.LEFT
         )
@@ -128,7 +130,7 @@ class Application(tk.Frame):
             font = ("Arial", 52, "bold"),
             background = "black",
             foreground = "white",
-            wraplength = wraplen,
+            wraplength = self.wordWrapLength,
             anchor = tk.NW,
             justify = tk.LEFT
         )
@@ -148,7 +150,7 @@ class Application(tk.Frame):
             font = ("Arial", 38, "bold"),
             background = "black",
             foreground = "white",
-            wraplength = wraplen,
+            wraplength = self.wordWrapLength,
             anchor = tk.NW,
             justify = tk.LEFT
         )
