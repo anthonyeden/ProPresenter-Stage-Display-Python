@@ -36,6 +36,11 @@ class Application(tk.Frame):
     # The maximum length of each line on the screen - set in config file
     wordWrapLength = 1500
 
+    # Font sizes
+    fontSizeClock = 52
+    fontSizeCurrent = 52
+    fontSizeNext = 36
+
     # Do we need to attempt a reconnection?
     tryReconnect = False
     disconnectTime = 0
@@ -70,6 +75,9 @@ class Application(tk.Frame):
             self.ProP_IPPort = int(ConfigData['IPPort'])
             self.ProP_Password = ConfigData['Password']
             self.wordWrapLength = int(ConfigData['WordWrapLength'])
+            self.fontSizeClock = int(ConfigData['FontSizeClock'])
+            self.fontSizeCurrent = int(ConfigData['FontSizeCurrent'])
+            self.fontSizeNext = int(ConfigData['FontSizeNext'])
 
         except Exception, e:
             print
@@ -153,7 +161,7 @@ class Application(tk.Frame):
         self.labelClock = tk.Label(
             self,
             text = str("Clock"),
-            font = ("Arial", 52, "bold"),
+            font = ("Arial", self.fontSizeClock, "bold"),
             background = "black",
             foreground = "#FFF",
             wraplength = self.wordWrapLength,
@@ -172,7 +180,7 @@ class Application(tk.Frame):
         self.labelCurrent = tk.Label(
             self,
             text = "Waiting for data...",
-            font = ("Arial", 52, "bold"),
+            font = ("Arial", self.fontSizeCurrent, "bold"),
             background = "black",
             foreground = "white",
             wraplength = self.wordWrapLength,
@@ -192,7 +200,7 @@ class Application(tk.Frame):
         self.labelNext = tk.Label(
             self,
             text = "",
-            font = ("Arial", 38, "bold"),
+            font = ("Arial", self.fontSizeNext, "bold"),
             background = "black",
             foreground = "white",
             wraplength = self.wordWrapLength,

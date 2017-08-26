@@ -2,5 +2,8 @@
     "IPAddress": "127.0.0.1",
     "IPPort": 60119,
     "Password": "password",
-    "WordWrapLength": 1500
+    "WordWrapLength": 1500,
+    "FontSizeClock": 52,
+    "FontSizeCurrent": 52,
+    "FontSizeNext": 36
 }
