@@ -19,6 +19,10 @@ This program has been designed to run on small devices such as the Raspberry Pi.
 4. Edit _config.json_ in a text editor and set the IP Address, Port Number, and Password for your ProPresenter Stage Display computer (found in _Preferences > Network_ of your ProPresenter PC).
 5. Run _python StageDisplay.py_
 
+# Known Issues
+
+There are a number of known issues. Please see the [Issues](https://github.com/anthonyeden/ProPresenter-Stage-Display-Python/issues) page for an up to date list of these. Feel free to add your own as you come across them.
+
 # Contributing
 
 If you wish to contribute to the development of this little script, please feel free to create a [Pull Request](https://github.com/anthonyeden/ProPresenter-Stage-Display-Python/pulls).
