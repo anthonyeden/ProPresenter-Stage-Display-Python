@@ -5,5 +5,11 @@
     "WordWrapLength": 1500,
     "FontSizeClock": 52,
     "FontSizeCurrent": 52,
-    "FontSizeNext": 36
+    "FontSizeNext": 36,
+    "LowerThirdMode": false,
+    "FontName": "Arial",
+    "FontUppercase": false,
+    "MergeLines": false,
+    "MergeLinesMin": 4,
+    "MergeLinesJoinChar": ","
 }

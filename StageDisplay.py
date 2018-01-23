@@ -41,6 +41,19 @@ class Application(tk.Frame):
     fontSizeCurrent = 52
     fontSizeNext = 36
 
+    # Font name
+    fontName = "Arial"
+    fontStyle = "bold"
+    fontUppercase = False
+
+    # Lower Third Mode?
+    modeLowerThird = False
+
+    # Merge every 2nd line (for lower thirds)
+    mergeLines = False
+    mergeLinesMin = 4
+    mergeLinesJoinChar = ","
+
     # Do we need to attempt a reconnection?
     tryReconnect = False
     disconnectTime = 0
@@ -53,6 +66,7 @@ class Application(tk.Frame):
         self.root.focus_set()
         self.root.attributes('-fullscreen', True)
         self.root.bind('<KeyPress>', self.close)
+        self.root.config(cursor = 'none')
         
         # Get the config from JSON
         try:
@@ -79,6 +93,27 @@ class Application(tk.Frame):
             self.fontSizeCurrent = int(ConfigData['FontSizeCurrent'])
             self.fontSizeNext = int(ConfigData['FontSizeNext'])
 
+            if "LowerThirdMode" in ConfigData and ConfigData['LowerThirdMode'] is True:
+                self.modeLowerThird = True
+
+            if "FontName" in ConfigData:
+                self.fontName = ConfigData['FontName']
+
+            if "FontStyle" in ConfigData:
+                self.fontStyle = ConfigData['FontStyle']
+
+            if "FontUppercase" in ConfigData and ConfigData['FontUppercase'] is True:
+                self.fontUppercase = True
+
+            if "MergeLines" in ConfigData and ConfigData['MergeLines'] is True:
+                self.mergeLines = True
+
+            if "MergeLinesMin" in ConfigData:
+                self.mergeLinesMin = int(ConfigData['MergeLinesMin'])
+            
+            if "MergeLinesJoinChar" in ConfigData:
+                self.mergeLinesJoinChar = ConfigData['MergeLinesJoinChar']
+
         except Exception, e:
             print
             print "##############################################"
@@ -88,8 +123,12 @@ class Application(tk.Frame):
             print
             
             exit()
-        
-        self.setupMainInterface()
+
+        if self.modeLowerThird:
+            self.setupMainInterface_LowerThird()
+        else:
+            self.setupMainInterface()
+
         self.connect()
         self.reconnect_tick()
 
@@ -161,7 +200,7 @@ class Application(tk.Frame):
         self.labelClock = tk.Label(
             self,
             text = str("Clock"),
-            font = ("Arial", self.fontSizeClock, "bold"),
+            font = (self.fontName, self.fontSizeClock, self.fontStyle),
             background = "black",
             foreground = "#FFF",
             wraplength = self.wordWrapLength,
@@ -180,7 +219,7 @@ class Application(tk.Frame):
         self.labelCurrent = tk.Label(
             self,
             text = "Waiting for data...",
-            font = ("Arial", self.fontSizeCurrent, "bold"),
+            font = (self.fontName, self.fontSizeCurrent, self.fontStyle),
             background = "black",
             foreground = "white",
             wraplength = self.wordWrapLength,
@@ -200,7 +239,7 @@ class Application(tk.Frame):
         self.labelNext = tk.Label(
             self,
             text = "",
-            font = ("Arial", self.fontSizeNext, "bold"),
+            font = (self.fontName, self.fontSizeNext, self.fontStyle),
             background = "black",
             foreground = "white",
             wraplength = self.wordWrapLength,
@@ -215,16 +254,86 @@ class Application(tk.Frame):
             pady = 50
         )
     
+    def setupMainInterface_LowerThird(self):
+        # Setup the interface widgets - for lower third mode
+
+        # Setup the main window for the application
+        tk.Frame.__init__(
+            self,
+            None,
+            background = "black",
+            cursor = "none"
+        )
+        self.grid(sticky = tk.N + tk.S + tk.E + tk.W)
+
+        self.top = self.winfo_toplevel()
+        
+        self.rowconfigure(0, weight = 1)
+        self.columnconfigure(0, weight = 1)
+        
+        self.top.grid()
+        self.top.rowconfigure(0, weight = 1)
+        self.top.columnconfigure(0, weight = 1)
+        
+        # Current Slide Text Label
+        self.labelCurrent = tk.Label(
+            self,
+            text = "Waiting for data...",
+            font = (self.fontName, self.fontSizeCurrent, self.fontStyle),
+            background = "black",
+            foreground = "white",
+            wraplength = self.wordWrapLength,
+        )
+        self.labelCurrent.grid(
+            column = 0,
+            row = 0,
+            sticky = tk.S + tk.W + tk.E,
+            padx = 50,
+            pady = 50
+        )
+    
     def updateSlideTextCurrent(self, data):
         # Update the text label for the current slide
-        if data['text'] is not None:
-            self.labelCurrent.configure(text = data['text'].encode('utf-8'))
-        else:
+        if self.labelCurrent is None:
+            return False
+
+        if data['text'] is None:
             self.labelCurrent.configure(text = "")
+            return None
+
+        if self.mergeLines:
+            # Prepare to remove every 2nd line break
+            lines = data['text'].encode('utf-8').split("\n")
+            textOutput = ""
+
+            if len(lines) < self.mergeLinesMin:
+                # No need to merge these lines
+                textOutput = "\n".join(lines)
+            else:
+                # Join every 2nd line to the previous
+                for i, line in enumerate(lines):
+                    if i == 0:
+                        textOutput = line
+                    elif i % 2 == 0:
+                        textOutput += "\n" + line
+                    else:
+                        textOutput += self.mergeLinesJoinChar + " " + line
+        else:
+            textOutput = data['text'].encode('utf-8')
+
+        if self.fontUppercase:
+            self.labelCurrent.configure(text = textOutput.upper())
+        elif not self.fontUppercase:
+            self.labelCurrent.configure(text = textOutput)
 
     def updateSlideTextNext(self, data):
         # Update the text label for the next slide
-        if data['text'] is not None:
+        if self.labelNext is None:
+            return False
+
+        if data['text'] is not None and self.fontUppercase:
+            self.labelNext.configure(text = data['text'].encode('utf-8').upper())
+        elif data['text'] is not None and not self.fontUppercase:
             self.labelNext.configure(text = data['text'].encode('utf-8'))
         else:
             self.labelNext.configure(text = "")
@@ -238,6 +347,9 @@ class Application(tk.Frame):
     
     def clock_tick(self):
         # Sets the clock time
+        if self.labelClock is None:
+            return False
+
         time_now = time.strftime('%I:%M:%S %p')
         
         # Update the timer on screen when the timer has incremented
