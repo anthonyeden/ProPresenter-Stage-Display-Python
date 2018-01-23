@@ -45,6 +45,8 @@ class Application(tk.Frame):
     fontName = "Arial"
     fontStyle = "bold"
     fontUppercase = False
+    fontAlign = tk.S + tk.W + tk.E
+    fontJustify = tk.CENTER
 
     # Lower Third Mode?
     modeLowerThird = False
@@ -104,6 +106,18 @@ class Application(tk.Frame):
 
             if "FontUppercase" in ConfigData and ConfigData['FontUppercase'] is True:
                 self.fontUppercase = True
+            
+            if "FontAlign" in ConfigData and ConfigData['FontAlign'] == "center":
+                self.fontAlign = tk.S + tk.W + tk.E
+                self.fontJustify = tk.CENTER
+            
+            if "FontAlign" in ConfigData and ConfigData['FontAlign'] == "left":
+                self.fontAlign = tk.S + tk.W
+                self.fontJustify = tk.LEFT
+            
+            if "FontAlign" in ConfigData and ConfigData['FontAlign'] == "right":
+                self.fontAlign = tk.S + tk.E
+                self.fontJustify = tk.RIGHT
 
             if "MergeLines" in ConfigData and ConfigData['MergeLines'] is True:
                 self.mergeLines = True
@@ -274,7 +288,7 @@ class Application(tk.Frame):
         self.top.grid()
         self.top.rowconfigure(0, weight = 1)
         self.top.columnconfigure(0, weight = 1)
-        
+
         # Current Slide Text Label
         self.labelCurrent = tk.Label(
             self,
@@ -283,11 +297,12 @@ class Application(tk.Frame):
             background = "black",
             foreground = "white",
             wraplength = self.wordWrapLength,
+            justify = self.fontJustify
         )
         self.labelCurrent.grid(
             column = 0,
             row = 0,
-            sticky = tk.S + tk.W + tk.E,
+            sticky = self.fontAlign,
             padx = 50,
             pady = 50
         )

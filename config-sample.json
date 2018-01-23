@@ -8,7 +8,9 @@
     "FontSizeNext": 36,
     "LowerThirdMode": false,
     "FontName": "Arial",
+    "FontStyle": "",
     "FontUppercase": false,
+    "FontAlign": "center",
     "MergeLines": false,
     "MergeLinesMin": 4,
     "MergeLinesJoinChar": ","
