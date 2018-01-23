@@ -49,9 +49,33 @@ cd /home/pi/ProPresenter-Stage-Display-Python/
 python2 StageDisplay.py
 ```
 
+# Lower Third Mode (Lyric Subtitles)
+
+You can also use this software to generate Lower Third (or subtitle-style) lyrics from ProPresenter. Now you can have one ProPresenter operator effortelssly generate lyrics for both the main screen and a broadcast/internet feed.
+
+To enable this mode, set 'LowerThirdMode' to true in config.json and restart the application.
+
+After you've enabled this change, the following options may be useful:
+
+    "FontSizeCurrent": 35,
+    "FontName": "Arial",
+    "FontUppercase": false,
+    "MergeLines": false,
+    "MergeLinesMin": 4,
+    "MergeLinesJoinChar": ","
+
+Here's a summary of these options and how you might be able to use them:
+
+* FontSizeCurrent: This is fairly self-explanatory
+* FontName: Set this to the name of a font installed on your system
+* FontUppercase: This will force all text to be converted to uppercase
+* MergeLines: Enable this to force every 2nd line to join with the previous line. This is useful if you have lots of lines on-screen, but don't want to display them all as separate lines in Lower Third Mode
+* MergeLinesMin: Slides with fewer than this number of lines won't be collapsed
+* MergeLinesJoinChar: This character will be inserted between the two lines that are joined. Best to use a semi-colon or comma.
+
 # Known Issues
 
-There are a number of known issues. Please see the [Issues](https://github.com/anthonyeden/ProPresenter-Stage-Display-Python/issues) page for an up to date list of these. Feel free to add your own as you come across them.
+There are some known issues, although this application is being used reliably week-in, week-out on a Raspberry Pi so it should be good for common usage scenarios. Please see the [Issues](https://github.com/anthonyeden/ProPresenter-Stage-Display-Python/issues) page for an up to date list of these. Feel free to add your own as you come across them.
 
 # Contributing
 
