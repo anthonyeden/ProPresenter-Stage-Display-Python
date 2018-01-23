@@ -6,11 +6,14 @@
     "FontSizeClock": 52,
     "FontSizeCurrent": 52,
     "FontSizeNext": 36,
-    "LowerThirdMode": false,
     "FontName": "Arial",
+
+    "LowerThirdMode": false,
     "FontStyle": "",
     "FontUppercase": false,
     "FontAlign": "center",
+    "PadX": 50,
+    "PadY": 50,
     "MergeLines": false,
     "MergeLinesMin": 4,
     "MergeLinesJoinChar": ","

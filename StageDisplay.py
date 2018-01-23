@@ -56,6 +56,10 @@ class Application(tk.Frame):
     mergeLinesMin = 4
     mergeLinesJoinChar = ","
 
+    # Specify the padding for the screen
+    padX = 50
+    padY = 50
+
     # Do we need to attempt a reconnection?
     tryReconnect = False
     disconnectTime = 0
@@ -106,15 +110,15 @@ class Application(tk.Frame):
 
             if "FontUppercase" in ConfigData and ConfigData['FontUppercase'] is True:
                 self.fontUppercase = True
-            
+
             if "FontAlign" in ConfigData and ConfigData['FontAlign'] == "center":
                 self.fontAlign = tk.S + tk.W + tk.E
                 self.fontJustify = tk.CENTER
-            
+
             if "FontAlign" in ConfigData and ConfigData['FontAlign'] == "left":
                 self.fontAlign = tk.S + tk.W
                 self.fontJustify = tk.LEFT
-            
+
             if "FontAlign" in ConfigData and ConfigData['FontAlign'] == "right":
                 self.fontAlign = tk.S + tk.E
                 self.fontJustify = tk.RIGHT
@@ -124,9 +128,15 @@ class Application(tk.Frame):
 
             if "MergeLinesMin" in ConfigData:
                 self.mergeLinesMin = int(ConfigData['MergeLinesMin'])
-            
+
             if "MergeLinesJoinChar" in ConfigData:
                 self.mergeLinesJoinChar = ConfigData['MergeLinesJoinChar']
+
+            if "PadX" in ConfigData:
+                self.padX = int(ConfigData['PadX'])
+
+            if "PadY" in ConfigData:
+                self.padY = int(ConfigData['PadY'])
 
         except Exception, e:
             print
@@ -225,8 +235,8 @@ class Application(tk.Frame):
             column = 0,
             row = 0,
             sticky = tk.W+tk.E+tk.N+tk.S,
-            padx = 50,
-            pady = 50
+            padx = self.padX,
+            pady = self.padY
         )
         
         # Current Slide Text Label
@@ -244,8 +254,8 @@ class Application(tk.Frame):
             column = 0,
             row = 1,
             sticky = tk.W+tk.E+tk.N+tk.S,
-            padx = 50,
-            pady = 50
+            padx = self.padX,
+            pady = self.padY
         )
         
         
@@ -264,8 +274,8 @@ class Application(tk.Frame):
             column = 0,
             row = 2,
             sticky = tk.W+tk.E+tk.N+tk.S,
-            padx = 50,
-            pady = 50
+            padx = self.padX,
+            pady = self.padY
         )
     
     def setupMainInterface_LowerThird(self):
@@ -303,10 +313,10 @@ class Application(tk.Frame):
             column = 0,
             row = 0,
             sticky = self.fontAlign,
-            padx = 50,
-            pady = 50
+            padx = self.padX,
+            pady = self.padY
         )
-    
+
     def updateSlideTextCurrent(self, data):
         # Update the text label for the current slide
         if self.labelCurrent is None:
