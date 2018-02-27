@@ -55,6 +55,7 @@ class Application(tk.Frame):
     mergeLines = False
     mergeLinesMin = 4
     mergeLinesJoinChar = ","
+    mergeLinesStripTrailing = [".", ";", ",", " "]
 
     # Specify the padding for the screen
     padX = 50
@@ -337,6 +338,14 @@ class Application(tk.Frame):
             else:
                 # Join every 2nd line to the previous
                 for i, line in enumerate(lines):
+
+                    # Strip trailing or leading whitespace from each line
+                    line = line.strip()
+
+                    # Get rid of some trailing punctuation before the merge
+                    if line[-1:] in self.mergeLinesStripTrailing:
+                        line = line[:-1]
+
                     if i == 0:
                         textOutput = line
                     elif i % 2 == 0:
