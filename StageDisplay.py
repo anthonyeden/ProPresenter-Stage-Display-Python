@@ -342,7 +342,7 @@ class Application(tk.Frame):
                     elif i % 2 == 0:
                         textOutput += "\n" + line
                     else:
-                        textOutput += self.mergeLinesJoinChar + " " + line
+                        textOutput += self.mergeLinesJoinChar.encode('utf-8') + " " + line
         else:
             textOutput = data['text'].encode('utf-8')
 
