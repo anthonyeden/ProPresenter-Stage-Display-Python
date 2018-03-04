@@ -8,7 +8,7 @@
         "marginBottom": 50,
         "marginLeft": 50,
         "sysfontname": "Helvetica",
-		"fontsize": 75,
+        "fontsize": 75,
         "color": [255, 255, 255],
         "shadow": [0.3, 0.3],
         "scolor": [32, 32, 32],
