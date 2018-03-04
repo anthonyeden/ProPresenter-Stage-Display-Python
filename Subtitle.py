@@ -91,7 +91,7 @@ class Application():
                     pygame.quit()
                     sys.exit()
             
-            clock.tick(60)
+            clock.tick(1)
  
     def connect(self):
         # Connect to ProPresenter and setup the necessary callbacks
