@@ -1,0 +1,18 @@
+{
+	"IPAddress": "127.0.0.1",
+	"IPPort": 58109,
+	"Password": "password",
+	"Subtitle": {
+        "bgcolor": [0, 255, 0],
+        "align": "center",
+        "marginBottom": 50,
+        "marginLeft": 50,
+        "sysfontname": "Helvetica",
+		"fontsize": 75,
+        "color": [255, 255, 255],
+        "shadow": [0.3, 0.3],
+        "scolor": [32, 32, 32],
+        "owidth": 0.5,
+        "ocolor": [0, 0, 0]
+	}
+}
