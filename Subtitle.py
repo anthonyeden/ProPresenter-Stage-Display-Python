@@ -122,6 +122,8 @@ class Application():
         if self.disconnectTime == 0:
             self.disconnectTime = time.time()
         
+        self.update("")
+        
         print "ProPresenter Disconnected", error
 
     def reconnect_tick(self):
