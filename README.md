@@ -49,6 +49,15 @@ cd /home/pi/ProPresenter-Stage-Display-Python/
 python2 StageDisplay.py
 ```
 
+# Upgrading - Raspberry Pi
+
+1. Open Terminal and run the following commands:
+
+```
+cd ~/ProPresenter-Stage-Display-Python
+git pull
+```
+
 # Lower Third Mode (Lyric Subtitles)
 
 You can also use this software to generate Lower Third (or subtitle-style) lyrics from ProPresenter. Now you can have one ProPresenter operator effortelssly generate lyrics for both the main screen and a broadcast/internet feed.
