@@ -11,7 +11,7 @@ Currently, this implementation is very basic and designed to implement only thre
 
 This program has been designed to run on small devices such as the Raspberry Pi.
 
-# How to setup - general instructions
+# Installation - General Instructions (non-Raspberry Pi)
 
 1. Download the [software](https://github.com/anthonyeden/ProPresenter-Stage-Display-Python/archive/master.zip)
 2. Install Python2
@@ -19,7 +19,7 @@ This program has been designed to run on small devices such as the Raspberry Pi.
 4. Edit _config.json_ in a text editor and set the IP Address, Port Number, and Password for your ProPresenter Stage Display computer (found in _Preferences > Network_ of your ProPresenter PC).
 5. Run _python StageDisplay.py_
 
-# Installation on Raspberry Pi
+# Installation - Raspberry Pi
 
 1. [Download and install Raspbian Desktop](https://www.raspberrypi.org/downloads/raspbian/) on your Raspberry Pi
 2. Connect your WiFi or Ethernet
