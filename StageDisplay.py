@@ -7,10 +7,10 @@ import Tkinter as tk
 import time
 
 __author__ = "Anthony Eden"
-__copyright__ = "Copyright 2017, Anthony Eden / Media Realm"
+__copyright__ = "Copyright 2017-2018, Anthony Eden / Media Realm"
 __credits__ = ["Anthony Eden"]
 __license__ = "GPL"
-__version__ = "0.1"
+__version__ = "1.0"
 
 class Application(tk.Frame):
     

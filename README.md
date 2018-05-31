@@ -21,7 +21,7 @@ This program has been designed to run on small devices such as the Raspberry Pi.
 
 # Installation on Raspberry Pi
 
-1. [Download and install NOOBS](https://www.raspberrypi.org/downloads/noobs/) with a desktop on your Raspberry Pi
+1. [Download and install Raspbian Desktop](https://www.raspberrypi.org/downloads/raspbian/) on your Raspberry Pi
 2. Connect your WiFi or Ethernet
 3. Open Terminal and run the following commands:
 
@@ -72,6 +72,52 @@ Here's a summary of these options and how you might be able to use them:
 * MergeLines: Enable this to force every 2nd line to join with the previous line. This is useful if you have lots of lines on-screen, but don't want to display them all as separate lines in Lower Third Mode
 * MergeLinesMin: Slides with fewer than this number of lines won't be collapsed
 * MergeLinesJoinChar: This character will be inserted between the two lines that are joined. Best to use a semi-colon or comma.
+
+# Disabling the Screensaver on a Raspberry Pi
+
+If you run this application on a Raspberry Pi, you're going to need to disable the screensaver. There's a couple of ways to do this, depending on your version of Raspbian:
+
+## Method 1
+
+1. Install XScreensaver, by using the following terminal command:
+
+```
+sudo apt-get install xscreensaver
+```
+
+2. Open the menu in the top-left corner of your desktop.
+3. Go to Preference > Screensaver.
+4. Select "Disable Screensaver"
+5. Reboot your Pi for the changes to work
+
+
+## Method 2
+
+```
+sudo nano /etc/lightdm/lightdm.conf
+```
+
+Find (Ctrl + W):
+
+```
+#xserver-command=X
+```
+
+Change it to:
+
+```
+xserver-command=X -s 0 dpms
+```
+
+## Method 3
+
+Add these lines to /etc/xdg/lxsession/LXDE-pi/autostart:
+
+```
+@xset s noblank 
+@xset s off 
+@xset -dpms
+```
 
 # Known Issues
 
