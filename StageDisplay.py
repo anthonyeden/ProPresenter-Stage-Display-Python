@@ -65,6 +65,14 @@ class Application(tk.Frame):
     backgroundColour = "black"
     textColour = "white"
 
+    # Store the next that needs to be rendered
+    currentText = ""
+    nextText = ""
+
+    # Lower third padding
+    lowerThirdHeight = 0
+    lowerThirdContainer = None
+
     # Do we need to attempt a reconnection?
     tryReconnect = False
     disconnectTime = 0
@@ -142,6 +150,11 @@ class Application(tk.Frame):
 
             if "PadY" in ConfigData:
                 self.padY = int(ConfigData['PadY'])
+            
+            if "LowerThirdHeight" in ConfigData:
+                self.lowerThirdHeight = int(ConfigData['LowerThirdHeight'])
+            else:
+                self.lowerThirdHeight = self.root.winfo_screenheight() - (self.padY * 2)
             
             if "BackgroundColour" in ConfigData:
                 self.backgroundColour = ConfigData['BackgroundColour']
@@ -310,23 +323,42 @@ class Application(tk.Frame):
         self.top.rowconfigure(0, weight = 1)
         self.top.columnconfigure(0, weight = 1)
 
-        # Current Slide Text Label
-        self.labelCurrent = tk.Label(
+        self.lowerThirdContainer = tk.Frame(
             self,
+            height = self.lowerThirdHeight,
+            width = self.root.winfo_screenwidth() - (self.padX * 2),
+            background = self.backgroundColour,
+        )
+        self.lowerThirdContainer.pack_propagate(0)
+        self.lowerThirdContainer.place(x = self.padX, y = self.root.winfo_screenheight() - self.padY - self.lowerThirdHeight)
+
+        self.labelCurrent = tk.Label(
+            self.lowerThirdContainer,
             text = "Waiting for data...",
             font = (self.fontName, self.fontSizeCurrent, self.fontStyle),
-            background = self.backgroundColour,
             foreground = self.textColour,
+            background = self.backgroundColour,
             wraplength = self.wordWrapLength,
-            justify = self.fontJustify
+            justify = self.fontJustify,
         )
-        self.labelCurrent.grid(
-            column = 0,
-            row = 0,
-            sticky = self.fontAlign,
-            padx = self.padX,
-            pady = self.padY
-        )
+
+        if self.fontJustify == tk.RIGHT:
+            anchor = tk.E
+        elif self.fontJustify == tk.LEFT:
+            anchor = tk.W
+        else:
+            anchor = tk.CENTER
+
+        if self.lowerThirdHeight == self.root.winfo_screenheight() - (self.padY * 2):
+            # Anchor to bottom of screen - old behaviour is now the default
+            expand = 0
+            side = tk.BOTTOM
+        else:
+            # Centre align
+            expand = 1
+            side = tk.TOP
+
+        self.labelCurrent.pack(fill = tk.Y, expand = expand, anchor = anchor, side = side)
 
     def updateSlideTextCurrent(self, data):
         # Update the text label for the current slide
@@ -334,7 +366,7 @@ class Application(tk.Frame):
             return False
 
         if data['text'] is None:
-            self.labelCurrent.configure(text = "")
+            self.currentText = ""
             return None
 
         if self.mergeLines:
@@ -365,22 +397,24 @@ class Application(tk.Frame):
         else:
             textOutput = data['text'].encode('utf-8')
 
+        # We want the text to be updated by the main thread, not the ProPresenter thread
         if self.fontUppercase:
-            self.labelCurrent.configure(text = textOutput.upper())
+            self.currentText = textOutput.upper()
         elif not self.fontUppercase:
-            self.labelCurrent.configure(text = textOutput)
+            self.currentText = textOutput
 
     def updateSlideTextNext(self, data):
         # Update the text label for the next slide
         if self.labelNext is None:
             return False
 
+        # We want the text to be updated by the main thread, not the ProPresenter thread
         if data['text'] is not None and self.fontUppercase:
-            self.labelNext.configure(text = data['text'].encode('utf-8').upper())
+            self.nextText = data['text'].encode('utf-8').upper()
         elif data['text'] is not None and not self.fontUppercase:
-            self.labelNext.configure(text = data['text'].encode('utf-8'))
+            self.nextText = data['text'].encode('utf-8')
         else:
-            self.labelNext.configure(text = "")
+            self.nextText = ""
     
     def close(self, extra = None):
         # Terminate the application
@@ -402,9 +436,24 @@ class Application(tk.Frame):
             self.labelClock.config(text = time_now)
         
         self.labelClock.after(200, self.clock_tick)
+    
+    def updatetext_tick(self):
+        # Update text from the main thread (to try and avoid redraw issues)
+
+        if self.labelCurrent is not None:
+            self.labelCurrent.configure(text = self.currentText)
+            self.update_idletasks()
+        
+        if self.labelNext is not None:
+            self.labelNext.configure(text = self.nextText)
+            self.update_idletasks()
+
+        if self.labelCurrent is not None:
+            self.labelCurrent.after(100, self.updatetext_tick)
 
 if __name__ == "__main__":
     app = Application()
     app.master.title('ProPresenter Stage Display')
     app.clock_tick()
+    app.updatetext_tick()
     app.mainloop()
