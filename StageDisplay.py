@@ -61,6 +61,10 @@ class Application(tk.Frame):
     padX = 50
     padY = 50
 
+    # Allow user-configurable background and text colours
+    backgroundColour = "black"
+    textColour = "white"
+
     # Do we need to attempt a reconnection?
     tryReconnect = False
     disconnectTime = 0
@@ -138,6 +142,12 @@ class Application(tk.Frame):
 
             if "PadY" in ConfigData:
                 self.padY = int(ConfigData['PadY'])
+            
+            if "BackgroundColour" in ConfigData:
+                self.backgroundColour = ConfigData['BackgroundColour']
+
+            if "TextColour" in ConfigData:
+                self.textColour = ConfigData['TextColour']
 
         except Exception, e:
             print
@@ -203,7 +213,7 @@ class Application(tk.Frame):
         tk.Frame.__init__(
             self,
             None,
-            background = "black"
+            background = self.backgroundColour
         )
         self.grid(sticky = tk.N + tk.S + tk.E + tk.W)
 
@@ -226,8 +236,8 @@ class Application(tk.Frame):
             self,
             text = str("Clock"),
             font = (self.fontName, self.fontSizeClock, self.fontStyle),
-            background = "black",
-            foreground = "#FFF",
+            background = self.backgroundColour,
+            foreground = self.textColour,
             wraplength = self.wordWrapLength,
             anchor = tk.NW,
             justify = tk.LEFT
@@ -245,8 +255,8 @@ class Application(tk.Frame):
             self,
             text = "Waiting for data...",
             font = (self.fontName, self.fontSizeCurrent, self.fontStyle),
-            background = "black",
-            foreground = "white",
+            background = self.backgroundColour,
+            foreground = self.textColour,
             wraplength = self.wordWrapLength,
             anchor = tk.NW,
             justify = tk.LEFT
@@ -265,8 +275,8 @@ class Application(tk.Frame):
             self,
             text = "",
             font = (self.fontName, self.fontSizeNext, self.fontStyle),
-            background = "black",
-            foreground = "white",
+            background = self.backgroundColour,
+            foreground = self.textColour,
             wraplength = self.wordWrapLength,
             anchor = tk.NW,
             justify = tk.LEFT
@@ -286,7 +296,7 @@ class Application(tk.Frame):
         tk.Frame.__init__(
             self,
             None,
-            background = "black",
+            background = self.backgroundColour,
             cursor = "none"
         )
         self.grid(sticky = tk.N + tk.S + tk.E + tk.W)
@@ -305,8 +315,8 @@ class Application(tk.Frame):
             self,
             text = "Waiting for data...",
             font = (self.fontName, self.fontSizeCurrent, self.fontStyle),
-            background = "black",
-            foreground = "white",
+            background = self.backgroundColour,
+            foreground = self.textColour,
             wraplength = self.wordWrapLength,
             justify = self.fontJustify
         )

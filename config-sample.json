@@ -7,6 +7,8 @@
     "FontSizeCurrent": 52,
     "FontSizeNext": 36,
     "FontName": "Arial",
+    "BackgroundColour": "#000000",
+    "TextColour": "#FFFFFF",
 
     "LowerThirdMode": false,
     "FontStyle": "",

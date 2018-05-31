@@ -62,7 +62,9 @@ After you've enabled this change, the following options may be useful:
     "FontUppercase": false,
     "MergeLines": false,
     "MergeLinesMin": 4,
-    "MergeLinesJoinChar": ","
+    "MergeLinesJoinChar": ",",
+    "BackgroundColour": "#000000",
+    "TextColour": "#FFFFFF"
 
 Here's a summary of these options and how you might be able to use them:
 
@@ -72,6 +74,7 @@ Here's a summary of these options and how you might be able to use them:
 * MergeLines: Enable this to force every 2nd line to join with the previous line. This is useful if you have lots of lines on-screen, but don't want to display them all as separate lines in Lower Third Mode
 * MergeLinesMin: Slides with fewer than this number of lines won't be collapsed
 * MergeLinesJoinChar: This character will be inserted between the two lines that are joined. Best to use a semi-colon or comma.
+* BackgroundColour & TextColour: Specify any six-digit [hex string](http://www.color-hex.com) (starting with a # symbol) to change the colour of the text and background
 
 # Disabling the Screensaver on a Raspberry Pi
 
