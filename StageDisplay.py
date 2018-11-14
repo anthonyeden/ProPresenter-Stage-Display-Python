@@ -57,6 +57,9 @@ class Application(tk.Frame):
     mergeLinesJoinChar = ","
     mergeLinesStripTrailing = [".", ";", ",", " "]
 
+    # Allow splitting the text at a certain delimiter
+    splitLinesChar = None
+
     # Specify the padding for the screen
     padX = 50
     padY = 50
@@ -161,6 +164,9 @@ class Application(tk.Frame):
 
             if "TextColour" in ConfigData:
                 self.textColour = ConfigData['TextColour']
+
+            if "SplitLines" in ConfigData:
+                self.splitLinesChar = ConfigData['SplitLines']
 
         except Exception, e:
             print
@@ -369,6 +375,10 @@ class Application(tk.Frame):
             self.currentText = ""
             return None
 
+        if self.splitLinesChar is not None and data['text'] is not None and self.splitLinesChar in data['text']:
+            data['text'] = data['text'].split(self.splitLinesChar)
+            data['text'] = data['text'][0]
+
         if self.mergeLines:
             # Prepare to remove every 2nd line break
             lines = data['text'].encode('utf-8').split("\n")
@@ -407,6 +417,10 @@ class Application(tk.Frame):
         # Update the text label for the next slide
         if self.labelNext is None:
             return False
+
+        if self.splitLinesChar is not None and data['text'] is not None and self.splitLinesChar in data['text']:
+            data['text'] = data['text'].split(self.splitLinesChar)
+            data['text'] = data['text'][0]
 
         # We want the text to be updated by the main thread, not the ProPresenter thread
         if data['text'] is not None and self.fontUppercase:

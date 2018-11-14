@@ -18,5 +18,7 @@
     "PadY": 50,
     "MergeLines": false,
     "MergeLinesMin": 4,
-    "MergeLinesJoinChar": ","
+    "MergeLinesJoinChar": ",",
+
+    "SplitLines": null
 }
