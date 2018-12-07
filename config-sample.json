@@ -20,5 +20,7 @@
     "MergeLinesMin": 4,
     "MergeLinesJoinChar": ",",
 
-    "SplitLines": null
+    "SplitLines": null,
+
+    "TimerLabels": ["Elapsed Time", "Video Countdown"]
 }

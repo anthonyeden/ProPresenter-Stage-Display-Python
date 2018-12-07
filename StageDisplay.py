@@ -29,7 +29,8 @@ class Application(tk.Frame):
     labelCurrent = None
     labelNext = None
     labelClock = None
-    
+    labelTimer = None
+
     # Store the last time string
     time_last = ""
 
@@ -71,6 +72,10 @@ class Application(tk.Frame):
     # Store the next that needs to be rendered
     currentText = ""
     nextText = ""
+
+    # Store a dict of all currently running timers, so we can work out which ones to show
+    runningTimers = {}
+    timerRank = []
 
     # Lower third padding
     lowerThirdHeight = 0
@@ -167,6 +172,9 @@ class Application(tk.Frame):
 
             if "SplitLines" in ConfigData:
                 self.splitLinesChar = ConfigData['SplitLines']
+            
+            if "TimerLabels" in ConfigData:
+                self.timerRank = ConfigData['TimerLabels']
 
         except Exception, e:
             print
@@ -197,6 +205,8 @@ class Application(tk.Frame):
         self.ProPresenter.addSubscription("Connected", self.connected)
         self.ProPresenter.addSubscription("ConnectionFailed", self.connectFailed)
         self.ProPresenter.addSubscription("Disconnected", self.disconnected)
+        self.ProPresenter.addSubscription("Timer*", self.updateTimer)
+        self.ProPresenter.addSubscription("VideoCounter", self.updateTimerVideo)
         self.ProPresenter.start()
 
     def connected(self, data):
@@ -239,9 +249,10 @@ class Application(tk.Frame):
         self.top = self.winfo_toplevel()
         
         self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 20)
+        self.rowconfigure(1, weight = 40)
         self.rowconfigure(2, weight = 20)
         self.columnconfigure(0, weight = 1)
+        self.columnconfigure(1, weight = 1)
         
         self.top.grid()
         self.top.rowconfigure(0, weight = 1)
@@ -264,7 +275,26 @@ class Application(tk.Frame):
         self.labelClock.grid(
             column = 0,
             row = 0,
-            sticky = tk.W+tk.E+tk.N+tk.S,
+            sticky = tk.W+tk.N+tk.S,
+            padx = self.padX,
+            pady = self.padY
+        )
+
+        # Timer Text Label
+        self.labelTimer = tk.Label(
+            self,
+            text = "",
+            font = (self.fontName, self.fontSizeClock, self.fontStyle),
+            background = self.backgroundColour,
+            foreground = self.textColour,
+            wraplength = self.wordWrapLength,
+            anchor = tk.NE,
+            justify = tk.RIGHT
+        )
+        self.labelTimer.grid(
+            column = 1,
+            row = 0,
+            sticky = tk.E+tk.N+tk.S,
             padx = self.padX,
             pady = self.padY
         )
@@ -278,14 +308,15 @@ class Application(tk.Frame):
             foreground = self.textColour,
             wraplength = self.wordWrapLength,
             anchor = tk.NW,
-            justify = tk.LEFT
+            justify = tk.LEFT,
         )
         self.labelCurrent.grid(
             column = 0,
             row = 1,
             sticky = tk.W+tk.E+tk.N+tk.S,
             padx = self.padX,
-            pady = self.padY
+            pady = self.padY,
+            columnspan = 2,
         )
         
         
@@ -298,14 +329,15 @@ class Application(tk.Frame):
             foreground = self.textColour,
             wraplength = self.wordWrapLength,
             anchor = tk.NW,
-            justify = tk.LEFT
+            justify = tk.LEFT,
         )
         self.labelNext.grid(
             column = 0,
             row = 2,
             sticky = tk.W+tk.E+tk.N+tk.S,
             padx = self.padX,
-            pady = self.padY
+            pady = self.padY,
+            columnspan = 2,
         )
     
     def setupMainInterface_LowerThird(self):
@@ -430,6 +462,59 @@ class Application(tk.Frame):
         else:
             self.nextText = ""
     
+    def updateTimer(self, data):
+        # Update the various timers
+        if self.labelTimer is None:
+            return False
+
+        if data['text'] is None or 'label' not in data:
+            return None
+
+        if data['text'] == "--:--:--":
+            data['running'] = "0"
+
+        if ('running' not in data or data['running'] == "0") and data['label'] in self.runningTimers:
+            del self.runningTimers[data['label']]
+
+        if 'overrun' not in data:
+            data['overrun'] = '0'
+
+        if 'running' in data and data['running'] == "1":
+            self.runningTimers[data['label']] = {
+                "current": data['text'],
+                "overrun": data['overrun'],
+                "type": data['type'],
+            }
+        
+        if len(self.runningTimers) == 0:
+            self.labelTimer.config(text = "")
+            return None
+        
+        # Loop over all configured timers, and show the highest priority one
+        for timerName in self.timerRank:
+            if timerName in self.runningTimers:
+                self.labelTimer.config(text = self.runningTimers[timerName]['current'])
+
+                if self.runningTimers[timerName]['overrun'] == "1" and self.runningTimers[timerName]['current'][:1] == "-":
+                    self.labelTimer.config(foreground = "red")
+                else:
+                    self.labelTimer.config(foreground = self.textColour)
+
+                return True
+
+        # Nothing to display - empty out the field
+        self.labelTimer.config(text = "")
+
+    def updateTimerVideo(self, data):
+        # Update the video countdown timer
+        if self.labelTimer is None:
+            return False
+
+        if data['text'] != '--:--:--':
+            data['running'] = '1'
+
+        self.updateTimer(data)
+
     def close(self, extra = None):
         # Terminate the application
         if self.ProPresenter is not None:

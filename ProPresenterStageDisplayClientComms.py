@@ -168,7 +168,7 @@ class ProPresenterStageDisplayClientComms(threading.Thread):
         for subI, subX in enumerate(self.dataSubscriptions):
 
             # If the subscribed command type matches the message's command type
-            if dataType == subX['commandType']:
+            if dataType == subX['commandType'] or (subX['commandType'][-1:] == "*" and dataType[:len(subX['commandType'][:-1])] == subX['commandType'][:-1]):
 
                 # Execute the callback!
                 subX['callback'](returnData)
