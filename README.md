@@ -3,6 +3,8 @@
 # ProPresenter Stage Display for Python
 An unofficial Python implementation of the [ProPresenter Stage Display](https://www.renewedvision.com/store.php?item=prostagedisplay).
 
+## THIS VERSION HAS BEEN DISCONTINUED. IT WILL NOT WORK IN ANY MAJOR FUTURE RELEASES OF PROPRESENTER (PAST VERSION 6). PLEASE UPGRADE TO THIS NEW VERSION: https://github.com/anthonyeden/ProPresenter-Lyrics-HTML
+
 Currently, this implementation is very basic and designed to implement only three basic features:
 
 * Clock
